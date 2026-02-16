@@ -276,7 +276,7 @@ class googleotpModel extends googleotp
 		$args->member_srl = $member_srl;
 		$args->device_token = hash('sha256', $device_token);
 		$args->device_name = $device_name;
-		$args->ipaddress = \RX_CLIENT_IP ?? $_SERVER['REMOTE_ADDR'];
+		$args->ipaddress = defined('RX_CLIENT_IP') ? RX_CLIENT_IP : $_SERVER['REMOTE_ADDR'];
 		$args->created_at = time();
 		$args->expires_at = time() + ($trust_days * 86400);
 

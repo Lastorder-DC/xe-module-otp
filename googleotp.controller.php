@@ -114,7 +114,14 @@ class googleotpController extends googleotp
 			        if($device_token)
 			        {
 			            $cookie_expire = time() + ($trust_days * 86400);
-			            setcookie('googleotp_trusted_device', $device_token, $cookie_expire, '/');
+			            $is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+			            setcookie('googleotp_trusted_device', $device_token, [
+			                'expires' => $cookie_expire,
+			                'path' => '/',
+			                'secure' => $is_https,
+			                'httponly' => true,
+			                'samesite' => 'Lax',
+			            ]);
 			        }
 			    }
 
@@ -286,7 +293,14 @@ class googleotpController extends googleotp
 		}
 
 		// 쿠키 삭제
-		setcookie('googleotp_trusted_device', '', time() - 3600, '/');
+		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+		setcookie('googleotp_trusted_device', '', [
+			'expires' => time() - 3600,
+			'path' => '/',
+			'secure' => $is_https,
+			'httponly' => true,
+			'samesite' => 'Lax',
+		]);
 
 		$this->setMessage('success_deleted');
 		if(Context::get('success_return_url'))
