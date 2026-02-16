@@ -664,7 +664,7 @@ class googleotpModel extends googleotp
 		foreach($output->data as $passkey)
 		{
 			$keys = json_decode($passkey->webauthn_data);
-			if(is_array($keys))
+			if(is_array($keys) && !empty($keys))
 			{
 				$all_keys = array_merge($all_keys, $keys);
 			}
