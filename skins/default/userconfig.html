@@ -85,7 +85,10 @@
             <h1>패스키 관리</h1>
             <div class="control-group">
                 <div class="controls">
-                    <button type="button" class="btn btn-primary" id="btn_register_passkey" onclick="registerPasskey()">새 패스키 등록</button>
+                    <div style="margin-bottom:10px;">
+                        <input type="text" id="passkey_name" placeholder="패스키 이름 (예: 내 노트북)" style="margin-right:5px;" />
+                        <button type="button" class="btn btn-primary" id="btn_register_passkey" onclick="registerPasskey()">새 패스키 등록</button>
+                    </div>
                     <p class="help-block" id="passkey_status"></p>
 
                     <!--@if($passkey_list && count($passkey_list) > 0)-->
@@ -183,7 +186,7 @@ function registerPasskey(){
         $('#passkey_status').text('보안 키를 터치하거나 생체 인증을 진행해주세요...').css('color', '');
         webauthnRegister(challenge, function(success, info){
             if(success){
-                exec_json("googleotp.procGoogleotpPasskeyRegister", {passkey_info: info, key_name: 'Passkey'}, function(regData){
+                exec_json("googleotp.procGoogleotpPasskeyRegister", {passkey_info: info, key_name: $('#passkey_name').val() || 'Passkey'}, function(regData){
                     if(regData.error != 0){
                         $('#passkey_status').text(regData.message).css('color', 'red');
                     } else {
