@@ -300,7 +300,13 @@ class googleotp extends ModuleObject
 	 */
 	public function checkUpdate()
 	{
-		return $this->checkTriggers();
+		if ($this->checkTriggers()) return true;
+
+		$oDB = DB::getInstance();
+		if (!$oDB->isColumnExists('googleotp_memberconfig', 'issue_type')) return true;
+		if (!$oDB->isTableExists('googleotp_passkey')) return true;
+
+		return false;
 	}
 
 	/**
@@ -312,7 +318,19 @@ class googleotp extends ModuleObject
 	 */
 	public function moduleUpdate()
 	{
-		return $this->registerTriggers();
+		$this->registerTriggers();
+
+		$oDB = DB::getInstance();
+		if (!$oDB->isColumnExists('googleotp_memberconfig', 'issue_type'))
+		{
+			$oDB->addColumn('googleotp_memberconfig', 'issue_type', 'varchar', 10, 'none', true);
+		}
+		if (!$oDB->isTableExists('googleotp_passkey'))
+		{
+			$oDB->createTableByXmlFile($this->module_path . 'schemas/googleotp_passkey.xml');
+		}
+
+		return $this->createObject(0, 'success_updated');
 	}
 
 	/**
