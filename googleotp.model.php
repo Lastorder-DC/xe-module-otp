@@ -563,28 +563,48 @@ class googleotpModel extends googleotp
 			return false;
 		}
 
+		// 새로 등록된 키만 추출 (기존 키 제외)
+		$all_keys = json_decode($webauthn_data, true);
 		if($existing)
 		{
-			// 기존 데이터 업데이트
-			$args = new stdClass();
-			$args->member_srl = $member_srl;
-			$args->webauthn_data = $webauthn_data;
-			$output = executeQuery('googleotp.updatePasskeyWebauthnData', $args);
+			$existing_keys = json_decode($existing, true);
+			$existing_ids = [];
+			if(is_array($existing_keys))
+			{
+				foreach($existing_keys as $ek)
+				{
+					if(isset($ek['id'])) $existing_ids[] = $ek['id'];
+				}
+			}
+			$new_keys = [];
+			if(is_array($all_keys))
+			{
+				foreach($all_keys as $key)
+				{
+					if(isset($key['id']) && !in_array($key['id'], $existing_ids))
+					{
+						$new_keys[] = $key;
+					}
+				}
+			}
+			$new_key_data = json_encode($new_keys ?: $all_keys);
 		}
 		else
 		{
-			// 새로운 데이터 삽입
-			$decoded = json_decode($info);
-			$credential_id = isset($decoded->id) ? $decoded->id : '';
-
-			$args = new stdClass();
-			$args->member_srl = $member_srl;
-			$args->credential_id = $credential_id;
-			$args->webauthn_data = $webauthn_data;
-			$args->key_name = $key_name ?: 'Passkey';
-			$args->created_at = time();
-			$output = executeQuery('googleotp.insertPasskey', $args);
+			$new_key_data = $webauthn_data;
 		}
+
+		// 항상 새로운 행으로 삽입
+		$decoded = json_decode($info);
+		$credential_id = isset($decoded->id) ? $decoded->id : '';
+
+		$args = new stdClass();
+		$args->member_srl = $member_srl;
+		$args->credential_id = $credential_id;
+		$args->webauthn_data = $new_key_data;
+		$args->key_name = $key_name ?: 'Passkey';
+		$args->created_at = time();
+		$output = executeQuery('googleotp.insertPasskey', $args);
 
 		return $output->toBool();
 	}
