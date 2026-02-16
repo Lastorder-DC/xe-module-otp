@@ -78,40 +78,44 @@
                         <p class="help-block">위 QR코드를 사용해 Google OTP를 등록한 뒤 표시되는 인증코드를 입력해주세요.</p>
                     </div>
                 </div>
-                <div class="control-group" id="passkey_section" style="display:none"|cond="$user_config->issue_type != 'passkey'">
-                    <label class="control-label">패스키 관리</label>
-                    <div class="controls">
-                        <button type="button" class="btn btn-primary" id="btn_register_passkey" onclick="registerPasskey()">새 패스키 등록</button>
-                        <p class="help-block" id="passkey_status"></p>
+            </div>
+        </section>
+        <!--@if(in_array('passkey', $googleotp_config->allow_issue_type))-->
+        <section class="section" id="passkey_section">
+            <h1>패스키 관리</h1>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" class="btn btn-primary" id="btn_register_passkey" onclick="registerPasskey()">새 패스키 등록</button>
+                    <p class="help-block" id="passkey_status"></p>
 
-                        <!--@if($passkey_list && count($passkey_list) > 0)-->
-                        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-                            <thead>
-                            <tr style="border-bottom:2px solid #ddd;">
-                                <th style="padding:8px; text-align:left;">패스키 이름</th>
-                                <th style="padding:8px; text-align:left;">등록일</th>
-                                <th style="padding:8px; text-align:center;">관리</th>
+                    <!--@if($passkey_list && count($passkey_list) > 0)-->
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead>
+                        <tr style="border-bottom:2px solid #ddd;">
+                            <th style="padding:8px; text-align:left;">패스키 이름</th>
+                            <th style="padding:8px; text-align:left;">등록일</th>
+                            <th style="padding:8px; text-align:center;">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <!--@foreach($passkey_list as $pk)-->
+                            <tr style="border-bottom:1px solid #eee;">
+                                <td style="padding:8px;">{$pk->key_name}</td>
+                                <td style="padding:8px;">{date('Y-m-d H:i', $pk->created_at)}</td>
+                                <td style="padding:8px; text-align:center;">
+                                    <button type="button" class="btn btn-danger btn-small" onclick="deletePasskey({$pk->idx})">삭제</button>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                                <!--@foreach($passkey_list as $pk)-->
-                                <tr style="border-bottom:1px solid #eee;">
-                                    <td style="padding:8px;">{$pk->key_name}</td>
-                                    <td style="padding:8px;">{date('Y-m-d H:i', $pk->created_at)}</td>
-                                    <td style="padding:8px; text-align:center;">
-                                        <button type="button" class="btn btn-danger btn-small" onclick="deletePasskey({$pk->idx})">삭제</button>
-                                    </td>
-                                </tr>
-                                <!--@end-->
-                            </tbody>
-                        </table>
-                        <!--@else-->
-                        <p style="margin-top:10px; color:#888;">등록된 패스키가 없습니다. 패스키를 등록해주세요.</p>
-                        <!--@endif-->
-                    </div>
+                            <!--@end-->
+                        </tbody>
+                    </table>
+                    <!--@else-->
+                    <p style="margin-top:10px; color:#888;">등록된 패스키가 없습니다.</p>
+                    <!--@endif-->
                 </div>
             </div>
         </section>
+        <!--@endif-->
         <div class="clearfix btnArea">
             <div class="pull-right">
                 <button class="btn btn-primary" type="submit">설정 저장</button>
@@ -138,7 +142,6 @@ $('#auth_otp').click(function(){
     $('#email_auth_help-block').hide();
     $('#sms_auth_help-block').hide();
     $('#passkey_auth_help-block').hide();
-    $('#passkey_section').hide();
 });
 $('#auth_email').click(function(){
     $('#google_otp_qr').hide();
@@ -147,7 +150,6 @@ $('#auth_email').click(function(){
     $('#email_auth_help-block').show();
     $('#sms_auth_help-block').hide();
     $('#passkey_auth_help-block').hide();
-    $('#passkey_section').hide();
 });
 $('#auth_sms').click(function(){
     $('#google_otp_qr').hide();
@@ -156,7 +158,6 @@ $('#auth_sms').click(function(){
     $('#email_auth_help-block').hide();
     $('#sms_auth_help-block').show();
     $('#passkey_auth_help-block').hide();
-    $('#passkey_section').hide();
 });
 $('#auth_passkey').click(function(){
     $('#google_otp_qr').hide();
@@ -165,7 +166,6 @@ $('#auth_passkey').click(function(){
     $('#email_auth_help-block').hide();
     $('#sms_auth_help-block').hide();
     $('#passkey_auth_help-block').show();
-    $('#passkey_section').show();
 });
 
 function registerPasskey(){
