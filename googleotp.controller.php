@@ -125,7 +125,7 @@ class googleotpController extends googleotp
 		    }
 		    else
 		    {
-		        $oGoogleOTPModel->insertAuthlog($member_srl, $otpnumber, "Y", $issue_type);
+		      $oGoogleOTPModel->insertAuthlog($member_srl, $otpnumber, "Y", $issue_type);
 			    $_SESSION['googleotp_passed'] = TRUE;
 
 			    // 신뢰할 수 있는 기기 등록 처리
@@ -153,7 +153,7 @@ class googleotpController extends googleotp
 		}
 		else
 		{
-		    $oGoogleOTPModel->insertAuthlog($member_srl, $otpnumber, "N", $issue_type);
+		  $oGoogleOTPModel->insertAuthlog($member_srl, $otpnumber, "N", $issue_type);
 			$this->setError(-1);
 			$this->setMessage("잘못된 인증 번호입니다");
 			$this->setRedirectUrl(Context::get('error_return_url') ?: getNotEncodedUrl('', 'act', 'dispGoogleotpInputotp'));
