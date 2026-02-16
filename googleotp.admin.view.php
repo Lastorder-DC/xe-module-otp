@@ -101,4 +101,30 @@ class googleotpAdminView extends googleotp
 		Context::set('page_navigation', $output->page_navigation);
 		Context::set('authsend_list', $output->data);
 	}
+
+	public function dispGoogleotpAdminTrustedDeviceList()
+	{
+		$oMemberModel = getModel('member');
+		
+		$args = new stdClass;
+		$args->page = Context::get('page');
+		$args->list_count = 20;
+		$args->page_count = 10;
+		$args->order_type = 'desc';
+		$output = executeQueryArray('googleotp.getAdminTrustedDeviceList', $args);
+
+		if($output->data)
+		{
+			foreach ($output->data as $key => $datum)
+			{
+				$output->data[$key]->member_info = $oMemberModel->getMemberInfoByMemberSrl($datum->member_srl);
+			}
+		}
+
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('page', $output->page);
+		Context::set('page_navigation', $output->page_navigation);
+		Context::set('device_list', $output->data);
+	}
 }
