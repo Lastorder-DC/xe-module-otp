@@ -23,9 +23,16 @@
 				<td><!--@if($val->use == 'Y')--> 사용<!--@else-->사용 안 함<!--@end--></td>
 				<td>
 				{@$_types = explode(',', $val->issue_type)}
+				{@$_type_names = []}
 				<!--@foreach($_types as $_t)-->
-				<!--@if($_t == 'otp')-->Google OTP<!--@elseif($_t == 'email')-->이메일<!--@elseif($_t == 'sms')-->문자<!--@elseif($_t == 'passkey')-->패스키<!--@endif-->
+				{@
+					if($_t == 'otp') $_type_names[] = 'Google OTP';
+					elseif($_t == 'email') $_type_names[] = '이메일';
+					elseif($_t == 'sms') $_type_names[] = '문자';
+					elseif($_t == 'passkey') $_type_names[] = '패스키';
+				}
 				<!--@end-->
+				{implode(', ', $_type_names)}
 			</td>
 				<td><a href="{getUrl('', 'module', 'admin', 'act', 'dispGoogleotpAdminMemberSetup', 'srl', $val->srl, 'nick_name', $val->member_info->nick_name)}">수정</a></td>
 			</tr>

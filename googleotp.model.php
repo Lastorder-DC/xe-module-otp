@@ -768,7 +768,7 @@ class googleotpModel extends googleotp
 		{
 			return [];
 		}
-		return array_filter(explode(',', $user_config->issue_type));
+		return array_filter(explode(',', $user_config->issue_type), function($v) { return $v !== ''; });
 	}
 
 	/**
