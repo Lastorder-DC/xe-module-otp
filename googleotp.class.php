@@ -304,7 +304,7 @@ class googleotp extends ModuleObject
 
 		$oDB = DB::getInstance();
 		if (!$oDB->isColumnExists('googleotp_memberconfig', 'issue_type')) return true;
-		if (!$oDB->isTableExists('googleotp_passkey')) return true;
+		if (!$oDB->isColumnExists('googleotp_authlog', 'issue_type')) return true;
 
 		return false;
 	}
@@ -325,9 +325,9 @@ class googleotp extends ModuleObject
 		{
 			$oDB->addColumn('googleotp_memberconfig', 'issue_type', 'varchar', 10, 'none', true);
 		}
-		if (!$oDB->isTableExists('googleotp_passkey'))
+		if (!$oDB->isColumnExists('googleotp_authlog', 'issue_type'))
 		{
-			$oDB->createTableByXmlFile($this->module_path . 'schemas/googleotp_passkey.xml');
+			$oDB->addColumn('googleotp_authlog', 'issue_type', 'varchar', 10, 'none', true);
 		}
 
 		return $this->createObject(0, 'success_updated');
