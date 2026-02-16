@@ -99,13 +99,7 @@
                                     <td style="padding:8px;">{$pk->key_name}</td>
                                     <td style="padding:8px;">{date('Y-m-d H:i', $pk->created_at)}</td>
                                     <td style="padding:8px; text-align:center;">
-                                        <form action="./" method="post" style="display:inline;">
-                                            <input type="hidden" name="module" value="googleotp" />
-                                            <input type="hidden" name="act" value="procGoogleotpDeletePasskey" />
-                                            <input type="hidden" name="passkey_idx" value="{$pk->idx}" />
-                                            <input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
-                                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('이 패스키를 삭제하시겠습니까?')">삭제</button>
-                                        </form>
+                                        <button type="button" class="btn btn-danger btn-small" onclick="deletePasskey({$pk->idx})">삭제</button>
                                     </td>
                                 </tr>
                                 <!--@end-->
@@ -205,6 +199,17 @@ function registerPasskey(){
                 }
             }
         });
+    });
+}
+
+function deletePasskey(passkey_idx){
+    if(!confirm('이 패스키를 삭제하시겠습니까?')) return;
+    exec_json("googleotp.procGoogleotpDeletePasskey", {passkey_idx: passkey_idx}, function(data){
+        if(data.error != 0){
+            alert(data.message);
+        } else {
+            location.reload();
+        }
     });
 }
 </script>
