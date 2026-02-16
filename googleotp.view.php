@@ -64,6 +64,7 @@ class googleotpView extends googleotp
 		$userconfig = $oGoogleOTPModel->getUserConfig($member_srl);
 		$userconfig->qrcode = $oGoogleOTPModel->generateQRCode($domain['host'], $logged_info->user_id, $userconfig->otp_id);
 
+		Context::set("member_srl", $member_srl);
 		Context::set("force_use_otp", $config->force_use_otp === "Y");
 		Context::set("user_config", $userconfig);
 		Context::set("user_mail", $logged_info->email_address);
