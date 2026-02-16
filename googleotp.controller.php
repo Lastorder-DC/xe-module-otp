@@ -518,6 +518,17 @@ class googleotpController extends googleotp
 
 		$oGoogleOTPModel = googleotpModel::getInstance();
 
+		// 2차 인증이 패스키 방식으로 활성화된 경우, 마지막 패스키는 삭제 불가
+		$user_config = $oGoogleOTPModel->getUserConfig($member_srl);
+		if($user_config && $user_config->use === 'Y' && $user_config->issue_type === 'passkey')
+		{
+			$passkey_list = $oGoogleOTPModel->getPasskeyList($member_srl);
+			if(count($passkey_list) <= 1)
+			{
+				return $this->createObject(-1, "패스키를 모두 삭제하려면 2차 인증을 비활성화하세요.");
+			}
+		}
+
 		if(!$oGoogleOTPModel->deletePasskey($idx, $member_srl))
 		{
 			return $this->createObject(-1, "패스키 삭제에 실패했습니다.");
